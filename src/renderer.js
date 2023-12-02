@@ -100,7 +100,8 @@ async function startRecord() {
 
   videoOut.srcObject = stream;
   await videoOut.play();
-
+  videoOut.style.width = "600px";
+  videoOut.style.height = '1000px';
   mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp9'});
   mediaRecorder.ondataavailable = onDataAvailable;
   mediaRecorder.onstop = stopRecording;
