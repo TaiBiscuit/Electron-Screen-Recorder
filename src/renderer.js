@@ -67,23 +67,7 @@ stopBtn.addEventListener('click', (e) => {
   mediaRecorder.stop();
 });
 
-
-
-// Functions
-
-async function getVideoSources() {
-    const inputSources = await ipcRenderer.invoke('getSources')
-
-    inputSources.forEach(source => {
-      const element = document.createElement("option")
-      element.value = source.id
-      element.innerHTML = source.name
-      selectMenu.appendChild(element)
-      selectMenu.style.display= 'inline';
-    }); 
-}
-
-async function startRecord() {
+selectMenu.addEventListener('change', async (e) => {
   const screenId = selectMenu.options[selectMenu.selectedIndex].value;
   
   const constraints = {
@@ -100,12 +84,47 @@ async function startRecord() {
 
   videoOut.srcObject = stream;
   await videoOut.play();
-  videoOut.style.width = "600px";
-  videoOut.style.height = '1000px';
-  mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp9'});
-  mediaRecorder.ondataavailable = onDataAvailable;
-  mediaRecorder.onstop = stopRecording;
-  mediaRecorder.start();
+})
+
+// Functions
+
+async function getVideoSources() {
+    const inputSources = await ipcRenderer.invoke('getSources')
+
+    inputSources.forEach(source => {
+      const element = document.createElement("option")
+      element.value = source.id
+      element.innerHTML = source.name
+      selectMenu.appendChild(element)
+      selectMenu.style.display= 'inline';
+    }); 
+}
+
+async function startRecord() {
+  console.log(selectMenu.options[selectMenu.selectedIndex].value)
+  const screenId = selectMenu.options[selectMenu.selectedIndex].value;
+  console.log(selectMenu.options[selectMenu.selectedIndex].value)
+  if(selectMenu.options[selectMenu.selectedIndex].value){
+    recordedChunks = [];
+    const constraints = {
+      audio: false,
+      video: {
+        mandatory: {
+          chromeMediaSource: 'desktop',
+          chromeMediaSourceId: screenId
+        }
+      }
+    }
+    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    videoOut.srcObject = stream;
+    await videoOut.play();
+    mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp9'});
+    mediaRecorder.ondataavailable = onDataAvailable;
+    mediaRecorder.onstop = stopRecording;
+    mediaRecorder.start();
+  } else {
+    alert('Choose a src!')
+  }
 } 
 
 
@@ -115,7 +134,7 @@ function onDataAvailable(e) {
 
 async function stopRecording(e) {
   const blob = new Blob(recordedChunks, {
-    type: 'video/webm; codecs=vp9'
+    type: 'video/mp4; codecs=vp9'
   });
 
   const buffer = Buffer.from(await blob.arrayBuffer());
@@ -127,3 +146,5 @@ async function stopRecording(e) {
     writeFile(filePath, buffer, () => console.log('Video saved!'));
   }
 }
+
+
