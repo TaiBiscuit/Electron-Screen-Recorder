@@ -61,5 +61,6 @@ ipcMain.handle('showSaveDialog', async () => {
   });
 });
 
-
-
+ipcMain.handle('getSystem', async () => {
+  return process.platform;
+})

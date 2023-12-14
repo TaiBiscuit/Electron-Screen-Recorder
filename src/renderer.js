@@ -28,7 +28,7 @@
 
 import './index.css';
 import { ipcRenderer } from 'electron';
-import { write, writeFile } from 'fs';
+import { writeFile } from 'fs';
 
 console.log('👋 This message is being logged by "renderer.js", included via webpack');
 
@@ -69,7 +69,6 @@ stopBtn.addEventListener('click', (e) => {
 
 selectMenu.addEventListener('change', async (e) => {
   const screenId = selectMenu.options[selectMenu.selectedIndex].value;
-  
   const constraints = {
     audio: false,
     video: {
@@ -79,10 +78,10 @@ selectMenu.addEventListener('change', async (e) => {
       }
     }
   }
-
   const stream = await navigator.mediaDevices.getUserMedia(constraints);
-
+  stream.mute;
   videoOut.srcObject = stream;
+  videoOut.muted = true
   await videoOut.play();
 })
 
@@ -90,7 +89,6 @@ selectMenu.addEventListener('change', async (e) => {
 
 async function getVideoSources() {
     const inputSources = await ipcRenderer.invoke('getSources')
-
     inputSources.forEach(source => {
       const element = document.createElement("option")
       element.value = source.id
@@ -101,11 +99,11 @@ async function getVideoSources() {
 }
 
 async function startRecord() {
-  console.log(selectMenu.options[selectMenu.selectedIndex].value)
   const screenId = selectMenu.options[selectMenu.selectedIndex].value;
-  console.log(selectMenu.options[selectMenu.selectedIndex].value)
+
   if(selectMenu.options[selectMenu.selectedIndex].value){
     recordedChunks = [];
+    const constraintsAudio = {audio: true}
     const constraints = {
       audio: false,
       video: {
@@ -115,13 +113,16 @@ async function startRecord() {
         }
       }
     }
+    const audioStream = await navigator.mediaDevices.getUserMedia(constraintsAudio)
     const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    const combinedStream = new MediaStream([...stream.getVideoTracks(), ...audioStream.getAudioTracks()])
     videoOut.srcObject = stream;
     await videoOut.play();
-    mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp9'});
+    mediaRecorder = new MediaRecorder(combinedStream, { mimeType: 'video/webm; codecs=vp9'});
     mediaRecorder.ondataavailable = onDataAvailable;
     mediaRecorder.onstop = stopRecording;
     mediaRecorder.start();
+
   } else {
     alert('Choose a src!')
   }
