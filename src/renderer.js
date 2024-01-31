@@ -105,17 +105,20 @@ async function startRecord() {
     recordedChunks = [];
     const constraintsAudio = {audio: true}
     const constraints = {
-      audio: false,
+      audio: { mandatory: {
+        echoCancellation: true,
+        chromeMediaSource: 'desktop'}},
       video: {
         mandatory: {
           chromeMediaSource: 'desktop',
-          chromeMediaSourceId: screenId
+          chromeMediaSourceId: screenId,
         }
       }
     }
     const audioStream = await navigator.mediaDevices.getUserMedia(constraintsAudio)
     const stream = await navigator.mediaDevices.getUserMedia(constraints);
-    const combinedStream = new MediaStream([...stream.getVideoTracks(), ...audioStream.getAudioTracks()])
+/*     const combinedStream = new MediaStream([...stream.getVideoTracks(), ...stream.getAudioTracks(), ...audioStream.getAudioTracks()]) */
+    const combinedStream = new MediaStream(stream) 
     videoOut.srcObject = stream;
     await videoOut.play();
     mediaRecorder = new MediaRecorder(combinedStream, { mimeType: 'video/webm; codecs=vp9'});
