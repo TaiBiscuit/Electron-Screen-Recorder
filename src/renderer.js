@@ -138,7 +138,7 @@ function onDataAvailable(e) {
 
 async function stopRecording(e) {
   const blob = new Blob(recordedChunks, {
-    type: 'video/mp4; codecs=vp9'
+    type: 'video/webm; codecs=h264'
   });
 
   const buffer = Buffer.from(await blob.arrayBuffer());

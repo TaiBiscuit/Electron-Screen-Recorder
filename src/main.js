@@ -57,7 +57,7 @@ ipcMain.handle('getSources', async() => {
 ipcMain.handle('showSaveDialog', async () => {
   return await dialog.showSaveDialog({
     buttonLabel: 'Save video',
-    defaultPath: `vid-${Date.now()}.mp4`
+    defaultPath: `vid-${Date.now()}.webm`
   });
 });
 
