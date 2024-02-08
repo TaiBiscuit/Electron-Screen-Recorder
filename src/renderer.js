@@ -39,6 +39,7 @@ const videoOut = document.querySelector('video');
 const startBtn = document.getElementById('start-btn');
 const stopBtn = document.getElementById('stop-btn');
 const chooseBtn = document.getElementById('choose-btn');
+const convertBtn = document.getElementById('convert-btn');
 const selectMenu = document.getElementById('select-menu');
 
 
@@ -103,7 +104,7 @@ async function startRecord() {
 
   if(selectMenu.options[selectMenu.selectedIndex].value){
     recordedChunks = [];
-    const constraintsAudio = {audio: true}
+/*     const constraintsAudio = {audio: true} */
     const constraints = {
       audio: { mandatory: {
         echoCancellation: true,
@@ -115,7 +116,7 @@ async function startRecord() {
         }
       }
     }
-    const audioStream = await navigator.mediaDevices.getUserMedia(constraintsAudio)
+/*     const audioStream = await navigator.mediaDevices.getUserMedia(constraintsAudio) */
     const stream = await navigator.mediaDevices.getUserMedia(constraints);
 /*     const combinedStream = new MediaStream([...stream.getVideoTracks(), ...stream.getAudioTracks(), ...audioStream.getAudioTracks()]) */
     const combinedStream = new MediaStream(stream) 
@@ -140,15 +141,17 @@ async function stopRecording(e) {
   const blob = new Blob(recordedChunks, {
     type: 'video/webm; codecs=h264'
   });
-
   const buffer = Buffer.from(await blob.arrayBuffer());
-  const { canceled, filePath } = await ipcRenderer.invoke('showSaveDialog');
 
-  if(canceled) return
-
-  if(filePath) {
-    writeFile(filePath, buffer, () => console.log('Video saved!'));
-  }
-}
+  convertBtn.style.display="block";
+  convertBtn.addEventListener('click', async (e) => {
+    const { canceled, filePath } = await ipcRenderer.invoke('showSaveDialog');
+    if(canceled) return
+    if(filePath) {
+      writeFile(filePath, buffer, () => console.log('Video saved!'));
+      convertBtn.style.display="none";
+    };
+  });
+};
 
 

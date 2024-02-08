@@ -37,3 +37,7 @@ select{
   height: 33px;
   margin-top: 2rem;
 }
+
+.convert{
+  display: none;
+}
