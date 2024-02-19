@@ -1,10 +1,15 @@
 module.exports = {
-  packagerConfig: {},
+  packagerConfig: {
+    icon: 'record-it.ico'
+  },
   rebuildConfig: {},
   makers: [
     {
       name: '@electron-forge/maker-squirrel',
-      config: {},
+      config: {
+        icon: 'record-it.ico',
+        setupIcon: 'record-it.ico',
+      },
     },
     {
       name: '@electron-forge/maker-zip',

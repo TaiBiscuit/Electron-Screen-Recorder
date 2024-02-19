@@ -2,17 +2,22 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Hello World!</title>
+    <title>Record it!</title>
 
   </head>
   <body>
-    <video class="video"></video>
-    <div>
-      <button class="btn start" id="start-btn">START</button>
-      <button class="btn stop" id="stop-btn">STOP</button>
-      <button class="btn choose" id="choose-btn">SRC</button>
-      <button class="btn convert" id="convert-btn">CONVERT</button>
+    <div class="main">
+      <div className="theme-container shadow-light">
+        <button id="toggle-dark-mode"><P>SUN</P></button>
+      </div>
+      <video class="video"></video>
       <select id="select-menu" class="hide"></select>
+      <div class="container">
+        <button class="btn start" id="start-btn">START</button>
+        <button class="btn stop" id="stop-btn">STOP</button>
+        <button class="btn choose" id="choose-btn">SRC</button>
+        <button class="btn convert" id="convert-btn">CONVERT</button>
+      </div>
     </div>
   </body>
 </html>

@@ -1,4 +1,4 @@
-const { app, BrowserWindow, desktopCapturer, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, desktopCapturer, ipcMain, dialog, nativeTheme } = require('electron');
 const path = require('path');
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -10,11 +10,12 @@ const createWindow = () => {
   const mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
+    icon: 'record-it.ico',
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
       nodeIntegration: true,
       contextIsolation: false,
-      devTools: false,
+      /* devTools: false, */
     },
   });
 
@@ -65,3 +66,16 @@ ipcMain.handle('showSaveDialog', async () => {
 ipcMain.handle('getSystem', async () => {
   return process.platform;
 })
+
+ipcMain.handle('dark-mode:toggle', () => {
+  if(nativeTheme.shouldUseDarkColors) {
+    nativeTheme.themeSource = 'light'
+  } else {
+    nativeTheme.themeSource = 'dark'
+  }
+  return nativeTheme.shouldUseDarkColors;
+});
+
+ipcMain.handle('dark-mode:system', () => {
+  nativeTheme.themeSource = 'system'
+});
