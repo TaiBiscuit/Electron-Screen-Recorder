@@ -41,16 +41,11 @@ const stopBtn = document.getElementById('stop-btn');
 const chooseBtn = document.getElementById('choose-btn');
 const convertBtn = document.getElementById('convert-btn');
 const selectMenu = document.getElementById('select-menu');
-const themeChanger = document.getElementById('toggle-dark-mode');
-const sun = "SUN";
-const moon = `MOON`;
-const body = document.getElementById('main');
 
 //Variables
 
 let mediaRecorder;
 let recordedChunks = [];
-let themeToggle = true;
 
 
 
@@ -71,12 +66,6 @@ stopBtn.addEventListener('click', (e) => {
   mediaRecorder.stop();
 });
 
-themeChanger.addEventListener('click', async (e) => {
-  e.preventDefault();
-  const isDarkMode = await window.darkMode.toggle()
-  document.getElementById('theme-source').innerHTML = isDarkMode ? 'Dark' : 'Light'
-  
-})
 
 
 selectMenu.addEventListener('change', async (e) => {
